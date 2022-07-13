@@ -1,0 +1,89 @@
+body{
+    margin:auto;
+    width: 1000px;
+    
+
+
+}
+/* Bordered form */
+form {
+  border: 3px solid #f1f1f1;
+  padding: 15px;
+  margin: auto;
+}
+
+/* Add padding to containers */
+.container {
+  padding: 16px;
+}
+
+/* Full-width input fields */
+input[type=text], input[type=files] {
+  width: 90%;
+  padding: 15px;
+  margin: auto;
+  display: inline-block;
+  border: none;
+  background: #f1f1f1;
+}
+
+input[type=text]:focus,:focus, input[type=file]:focus {
+  background-color: #ddd;
+  outline: none;
+}
+
+/* Overwrite default styles of hr */
+hr {
+  border: 1px solid #f1f1f1;
+  margin-bottom: 25px;
+}
+
+/* Set a style for the submit/register button */
+.productbtn {
+  background-color: rgb(34, 25, 8);
+  color: white;
+  padding: 16px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  opacity: 0.9;
+}
+
+.productbtn:hover {
+  opacity:1;
+}
+
+/* Add a blue text color to links */
+a {
+  color: dodgerblue;
+}
+
+/* Set a grey background color and center the text of the "sign in" section */
+.signin {
+  background-color: #f1f1f1;
+  text-align: center;
+}
+
+#products {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  #products td, #products th {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  #products tr:nth-child(even){background-color: #f2f2f2;}
+  
+  #products tr:hover {background-color: #ddd;}
+  
+  #products th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: brown;
+    color: white;
+  }
