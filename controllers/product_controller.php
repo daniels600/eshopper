@@ -69,12 +69,19 @@ function select_one_product_ctr($productID)
   return $log->select_one_product_cls($productID);
 }
 
+function getAllCategories_ctr()
+{
+  $log = new product_class;
+  return $log->getAllCategories_cls();
+}
+
 //count all products
 function count_product_ctr()
 {
   $log = new product_class;
   return $log->count_product_cls();
 }
+
 
 
 //--UPDATE--//
@@ -131,8 +138,31 @@ function search_product_ctr($find)
   $log = new product_class;
   return $log->search_product_cls($find);
 }
-function cart_quantity_ctr($c_id)
+
+function cart_quantity_login_ctr($c_id)
 {
-  $quantity = new product_class();
-  return $quantity->cart_quantity_cls($c_id);
+  $quantity = new product_class;
+  return $quantity->cart_quantity_login_cls($c_id);
+}
+
+function cart_quantity_ctr($ip_add)
+{
+  $quantity = new product_class;
+  return $quantity->cart_quantity_cls($ip_add);
+}
+
+function countCartItems()
+{
+  $ip_add = $_SERVER["REMOTE_ADDR"];
+  if (isset($_SESSION["cid"])) {
+    $session = $_SESSION["cid"];
+    $result = cart_quantity_login_ctr($session);
+
+    return $result['cart_qty'];
+  } else {
+    //When user is not logged in then we will count number of item in cart by using users unique ip address
+    $result = cart_quantity_ctr($ip_add);
+
+    return $result['cart_qty'];
+  }
 }

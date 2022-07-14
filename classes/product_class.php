@@ -89,7 +89,7 @@ class product_class extends db_connection
     //select one brand
     public function select_one_brand_cls($brandID)
     {
-        $sql = "SELECT `brand_name` FROM `brands` WHERE brand_id=$brandID";
+        $sql = "SELECT * FROM `brands` WHERE brand_id=$brandID";
         return $this->db_fetch_one($sql);
     }
 
@@ -103,7 +103,7 @@ class product_class extends db_connection
     //select one category
     public function select_one_category_cls($categoryID)
     {
-        $sql = "SELECT `cat_name` FROM `categories` WHERE cat_id=$categoryID";
+        $sql = "SELECT * FROM `categories` WHERE cat_id=$categoryID";
         return $this->db_fetch_one($sql);
     }
 
@@ -134,11 +134,26 @@ class product_class extends db_connection
         $query = "SELECT count(*) FROM products; ";
         return $this->db_query($query);
     }
-    //update cart count
-    public function cart_quantity_cls($c_id)
+
+    public function cart_quantity_login_cls($c_id)
     {
 
-        $query = "SELECT SUM(qty) FROM cart WHERE c_id=$c_id";
+        $query = "SELECT COUNT(*) AS cart_qty FROM cart WHERE c_id=$c_id";
+
+        return $this->db_fetch_one($query);
+    }
+
+    public function cart_quantity_cls($ip_add)
+    {
+
+        $query = "SELECT Count(*) AS cart_qty FROM cart WHERE ip_add=$ip_add";
+
+        return $this->db_fetch_one($query);
+    }
+
+    public function getAllCategories_cls()
+    {
+        $query = "SELECT *  FROM categories";
 
         return $this->db_fetch_all($query);
     }

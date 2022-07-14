@@ -2,7 +2,7 @@
 
 echo "your payment was successful";
 
-header("Location: ");
+// header("Location: ");
 
 
 ?>

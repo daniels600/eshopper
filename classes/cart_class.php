@@ -1,6 +1,6 @@
 <?php
 
-require('../settings/dbclass.php');
+require('../settings/db_class.php');
 
 //extending means inheriting all the methods from connection
 class Cart extends db_connection{
@@ -30,8 +30,14 @@ class Cart extends db_connection{
         from products AS p JOIN cart AS c ON p.product_id = c.p_id AND c.c_id = '$session'");
     }
 
-    function remove_cart($prod_id,$session){
+    function remove_cart_login($prod_id, $session)
+    {
         return $this->db_query("delete from cart where p_id = '$prod_id' and  c_id ='$session'");
+    }
+
+    function remove_cart($prod_id, $ip_add)
+    {
+        return $this->db_query("delete from cart where p_id = '$prod_id' and  ip_add ='$ip_add'");
     }
 
  
@@ -57,13 +63,23 @@ class Cart extends db_connection{
     }
 
 
-    function updateCartQty_Login($qty, $prod_id, $session){
-        return $this->db_query("update cart set qty='$qty' where c_id='$session' and p_id='$prod_id'");
+
+    function updateCartQty_notLogin($qty, $prod_id, $ip_add)
+    {
+        return $this->db_query("update cart set qty='$qty' where ip_add='$ip_add' and p_id='$prod_id'");
     }
 
+    function updateCartQty_Login($qty, $prod_id, $session)
+    {
+        return $this->db_query("update cart set qty='$qty' where c_id='$session' and p_id='$prod_id'");
+    }
     //insert order
-    function insert_order($c_id, $invoice, $date, $status){
-        return $this->db_query("insert into orders (customer_id, invoice_no, order_date, order_status) values('$c_id', '$invoice', '$date', '$status')");
+    function insert_order(
+        $c_id,
+        $invoice,
+        $status
+    ) {
+        return $this->db_query("insert into orders (customer_id, invoice_no, order_date, order_status) values('$c_id', '$invoice', CURDATE(), '$status')");
     }
 
     function insert_orderDetails($order_id, $product_id, $qty){
@@ -77,8 +93,9 @@ class Cart extends db_connection{
 
 
     //--INSERT--//
-    public function insert_payment_cls($amount, $c_id, $order_id, $cc, $pdate){
-        return $this->db_query("insert into payment (amt, customer_id, order_id, currency, payment_date) values ('$amount', '$c_id', '$order_id', '$cc', '$pdate')");
+    public function insert_payment_cls($amount, $c_id, $order_id, $cc)
+    {
+        return $this->db_query("insert into payment (amt, customer_id, order_id, currency, payment_date) values ('$amount', '$c_id', '$order_id', '$cc', CURDATE())");
     }
  // remove from cart
      public function remove_all_from_cart_cls($c_id)
@@ -98,11 +115,19 @@ class Cart extends db_connection{
     }
 
     //update cart count
-    public function cart_quantity_cls($c_id)
+    public function cart_quantity_login_cls($c_id)
     {
 
-        $query= "SELECT SUM(qty) FROM cart WHERE c_id=$c_id";
-        
-        return $this-> db_fetch_all($query);
+        $query = "SELECT COUNT(*) AS cart_qty FROM cart WHERE c_id=$c_id";
+
+        return $this->db_fetch_one($query);
+    }
+
+    public function cart_quantity_cls($ip_add)
+    {
+
+        $query = "SELECT COUNT(*) AS cart_qty FROM cart WHERE ip_add=$ip_add";
+
+        return $this->db_fetch_one($query);
     }
 }

@@ -22,15 +22,20 @@ if (isset($_GET['vid'])) {
 }
 
 // to select the number of products in the cart
-if (logged_in()==true) {
-    function cart_count(){
-        $c_id= $_SESSION['cid'];
-        $total= cart_quantity_ctr($c_id);
-        $total=$total[0];
-        $total1=$total['SUM(qty)'];
-        return $total1;
-    }
-}
+// if (logged_in()==true) {
+//     function cart_count(){
+//         $c_id= $_SESSION['cid'];
+//         $total= cart_quantity_ctr($c_id);
+//         $total=$total[0];
+//         $total1=$total['SUM(qty)'];
+//         return $total1;
+//     }
+// }
+
+
+
+
+
 
 
  

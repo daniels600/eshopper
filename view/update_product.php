@@ -15,48 +15,7 @@ if (isset($_GET['edit'])) {
     //when the update button id clicked
 
 }
-if (isset($_POST['update2'])) {
-    $product_id = $_POST['product_id'];
-    $product_cat = $_POST['category'];
-    $product_brand = $_POST['brand'];
-    $product_title = $_POST['title'];
-    $product_price = $_POST['price'];
-    $product_desc = $_POST['description'];
-    $product_keywords = $_POST['keyword'];
 
-
-    if (
-        !empty($_FILES['image']['tmp_name'])
-        && file_exists($_FILES['image']['tmp_name'])
-    ) {
-        $target = "../uploads/" . basename($_FILES['image']['name']);
-
-        $product_image = $_FILES['image']['name'];
-
-        $check = edit_productImg_ctr($product_id, $product_cat, $product_brand, $product_title, $product_price, $product_desc, $product_image, $product_keywords);
-
-        if ($check) {
-            if (move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
-                $msg = "success";
-                header("location:../admin/product.php?update=success");
-            } else {
-                $msg = "fail";
-                header("location:../admin/product.php?update=error");
-            }
-        } else {
-            echo "fail";
-        }
-    } else {
-        $check = edit_product_ctr($product_id, $product_cat, $product_brand, $product_title, $product_price, $product_desc, $product_keywords);
-
-        if ($check) {
-            header("location:../admin/product.php?update=success");
-        } else {
-            echo "fail";
-            header("location:../admin/product.php?update=error");
-        }
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -76,7 +35,7 @@ if (isset($_POST['update2'])) {
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    <title>Poks Beauty | Product</title>
+    <title>Update Product</title>
 </head>
 
 <body>
@@ -84,7 +43,7 @@ if (isset($_POST['update2'])) {
 
     <div style=" margin-left:500px; margin-right:500px;">
 
-        <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" name="form1" enctype="multipart/form-data">
+        <form method="POST" action="../actions/product_action.php" name="form1" enctype="multipart/form-data">
             <label for="title" class="form-label">Enter product title</label>
             <input name="title" type="text" class="form-control" id="title" value="<?php echo $old_product_title; ?>"><br>
             <label for="price" class="form-label">Enter product price</label>
@@ -93,8 +52,6 @@ if (isset($_POST['update2'])) {
             <input name="description" type="text" class="form-control" id="description" value="<?php echo $old_product_desc; ?>"><br>
             <label for="keyword" class="form-label">Enter product keywords</label>
             <input name="keyword" type="text" class="form-control" id="keyword" value="<?php echo $old_product_keyword; ?>"><br><br>
-
-
 
             <select name="category" id="text" class="form-control">
                 <option value="">Select category:</option>
@@ -140,14 +97,14 @@ if (isset($_POST['update2'])) {
             </select>
             <br><br>
             <label for="file-input" class="form-label">Old Image</label> <br>
-            <img src='../uploads/<?php echo $old_product_image; ?>' style='width: 200px; height: 200px; '>
-            <input type="file" id="text" name="image" id="file-input" class="form-control">
+            <img src='<?php echo $old_product_image; ?>' style='width: 200px; height: 200px; '>
+            <input type="file" name="image" id="file-input" class="form-control">
 
             <br><br>
 
             <input type="hidden" value="<?php echo $productID; ?>" name="product_id">
 
-            <button name="update2" type="submit" id="button" class="btn btn-dark text-light"> Update</button>
+            <button name="update" type="submit" id="button" class="btn btn-dark text-light"> Update</button>
         </form>
         <br><br>
     </div>

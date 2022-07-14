@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>EShopper - Bootstrap Shop Template</title>
+    <title>Bernice Apparel & Clothing</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Free HTML Templates" name="keywords">
     <meta content="Free HTML Templates" name="description">
@@ -13,7 +13,7 @@
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
@@ -23,9 +23,35 @@
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="../css/style.css" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 </head>
 
 <body>
+    <?php
+    include_once('../settings/core.php');
+    require('../controllers/cart_controller.php');
+    include("../functions/showAlerts.php");
+
+    $isAdmin = false;
+    $isLoggedIn = false;
+
+
+    if (check_user_role() == 1) {
+        $isAdmin = true;
+    }
+
+    if (isset($_SESSION['cid'])) {
+        $isLoggedIn = true;
+    }
+
+
+    $total_cost = 0;
+
+
+
+
+    ?>
     <!-- Topbar Start -->
     <div class="container-fluid">
         <div class="row bg-secondary py-2 px-xl-5">
@@ -61,7 +87,7 @@
         <div class="row align-items-center py-3 px-xl-5">
             <div class="col-lg-3 d-none d-lg-block">
                 <a href="" class="text-decoration-none">
-                    <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">E</span>Shopper</h1>
+                    <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">B</span>ernice</h1>
                 </a>
             </div>
             <div class="col-lg-6 col-6 text-left">
@@ -77,13 +103,13 @@
                 </form>
             </div>
             <div class="col-lg-3 col-6 text-right">
-                <a href="" class="btn border">
+                <!-- <a href="" class="btn border">
                     <i class="fas fa-heart text-primary"></i>
                     <span class="badge">0</span>
-                </a>
-                <a href="" class="btn border">
+                </a> -->
+                <a href="cart.php" class="btn border">
                     <i class="fas fa-shopping-cart text-primary"></i>
-                    <span class="badge">0</span>
+                    <span class="badge"><?php echo countCartItems() ?? 0; ?></span>
                 </a>
             </div>
         </div>
@@ -124,28 +150,50 @@
             <div class="col-lg-9">
                 <nav class="navbar navbar-expand-lg bg-light navbar-light py-3 py-lg-0 px-0">
                     <a href="" class="text-decoration-none d-block d-lg-none">
-                        <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">E</span>Shopper</h1>
+                        <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">B</span>ernice Apparel</h1>
                     </a>
                     <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
                         <span class="navbar-toggler-icon"></span>
                     </button>
-                    <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+
+                    <?php
+
+                    if ($isAdmin) {
+                        echo '<div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                         <div class="navbar-nav mr-auto py-0">
-                            <a href="../index.html" class="nav-item nav-link">Home</a>
-                            <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle active" data-toggle="dropdown">Pages</a>
-                                <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="cart.html" class="dropdown-item">Shopping Cart</a>
-                                    <a href="checkout.html" class="dropdown-item">Checkout</a>
-                                </div>
-                            </div>
-                            <a href="contact.html" class="nav-item nav-link">Contact</a>
+                            <a href="home.php" class="nav-item nav-link active">Home</a>
+                            <a href="admin_products.php" class="nav-item nav-link">Admin Dashboard</a>
                         </div>
                         <div class="navbar-nav ml-auto py-0">
-                            <a href="../login/login.php" class="nav-item nav-link">Login</a>
-                            <a href="../login/register.php" class="nav-item nav-link">Register</a>
+                            <a href="../actions/logout.php" class="nav-item nav-link">Logout</a>
                         </div>
-                    </div>
+                        
+                    </div>';
+                    } else {
+                        if (isset($_SESSION['cid'])) {
+                            echo '<div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+                                <div class="navbar-nav mr-auto py-0">
+                                    <a href="home.php" class="nav-item nav-link active">Home</a>
+                                </div>
+                                <div class="navbar-nav ml-auto py-0">
+                                    <a href="../actions/logout.php" class="nav-item nav-link">Logout</a>
+                                </div>
+                            </div>';
+                        } else {
+                            echo '<div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+                            <div class="navbar-nav mr-auto py-0">
+                                <a href="home.php" class="nav-item nav-link active">Home</a>
+                            </div>
+                            <div class="navbar-nav ml-auto py-0">
+                                <a href="login.php" class="nav-item nav-link">Login</a>
+                                <a href="register.php" class="nav-item nav-link">Register</a>
+                            </div>
+                        </div>';
+                        }
+                    }
+
+                    ?>
+
                 </nav>
             </div>
         </div>
@@ -158,7 +206,7 @@
         <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
             <h1 class="font-weight-semi-bold text-uppercase mb-3">Shopping Cart</h1>
             <div class="d-inline-flex">
-                <p class="m-0"><a href="">Home</a></p>
+                <p class="m-0"><a href="home.php">Home</a></p>
                 <p class="m-0 px-2">-</p>
                 <p class="m-0">Shopping Cart</p>
             </div>
@@ -178,115 +226,38 @@
                             <th>Price</th>
                             <th>Quantity</th>
                             <th>Total</th>
-                            <th>Remove</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody class="align-middle">
-                        <tr>
-                            <td class="align-middle"><img src="img/product-1.jpg" alt="" style="width: 50px;"> Colorful Stylish Shirt</td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle">
-                                <div class="input-group quantity mx-auto" style="width: 100px;">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-minus" >
-                                        <i class="fa fa-minus"></i>
-                                        </button>
+                        <?php
+                        $all_cart = get_Cartitem();
+
+                        if (isset($all_cart) && countCartItems() != 0) {
+                            foreach ($all_cart as $cart) {
+                                $total_cost += $cart['product_price'] * $cart['qty'];
+                                echo '<tr>
+                                <form action="../actions/edit_cart.php" method="post">
+                                <td class="align-middle"><img src="' . $cart['product_image'] . '" alt="" style="width: 50px;"> ' . $cart['product_title'] . '</td>
+                                <td class="align-middle">₵ ' . $cart['product_price'] . '</td>
+                                <td class="align-middle">
+                                    <div class="input-group quantity mx-auto" style="width: 100px;">
+                                        <input type="text" class="form-control form-control-sm bg-secondary text-center" value="' . $cart['qty'] . '" id="cart_qty" name="qty">
+                                        <input type="hidden" name="p_id" value="' . $cart['product_id'] . '" id="prod_id">
                                     </div>
-                                    <input type="text" class="form-control form-control-sm bg-secondary text-center" value="1">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-plus">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle"><button class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button></td>
-                        </tr>
-                        <tr>
-                            <td class="align-middle"><img src="img/product-2.jpg" alt="" style="width: 50px;"> Colorful Stylish Shirt</td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle">
-                                <div class="input-group quantity mx-auto" style="width: 100px;">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-minus" >
-                                        <i class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                    <input type="text" class="form-control form-control-sm bg-secondary text-center" value="1">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-plus">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle"><button class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button></td>
-                        </tr>
-                        <tr>
-                            <td class="align-middle"><img src="img/product-3.jpg" alt="" style="width: 50px;"> Colorful Stylish Shirt</td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle">
-                                <div class="input-group quantity mx-auto" style="width: 100px;">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-minus" >
-                                        <i class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                    <input type="text" class="form-control form-control-sm bg-secondary text-center" value="1">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-plus">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle"><button class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button></td>
-                        </tr>
-                        <tr>
-                            <td class="align-middle"><img src="img/product-4.jpg" alt="" style="width: 50px;"> Colorful Stylish Shirt</td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle">
-                                <div class="input-group quantity mx-auto" style="width: 100px;">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-minus" >
-                                        <i class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                    <input type="text" class="form-control form-control-sm bg-secondary text-center" value="1">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-plus">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle"><button class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button></td>
-                        </tr>
-                        <tr>
-                            <td class="align-middle"><img src="img/product-5.jpg" alt="" style="width: 50px;"> Colorful Stylish Shirt</td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle">
-                                <div class="input-group quantity mx-auto" style="width: 100px;">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-minus" >
-                                        <i class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                    <input type="text" class="form-control form-control-sm bg-secondary text-center" value="1">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-plus">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle"><button class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button></td>
-                        </tr>
+                                </td>
+                                <td class="align-middle">₵ ' . $cart['product_price'] * $cart['qty'] . '</td>
+                                <td class="align-middle"><a href="" style="margin-right: 10px" id="edit_cart"> <button class="btn-success" name="update_cart" type="submit"><i class="fas fa-check"></i></button></a><a href="../actions/remove_cart.php?prod_id=' . $cart['product_id'] . '"><button class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button></a></td>
+                                </form>
+                            </tr>';
+                            }
+                        } else {
+                            $total_cost = 0;
+                            echo '<tr><td>No items added to cart</td></tr>';
+                        }
+
+                        ?>
+
                     </tbody>
                 </table>
             </div>
@@ -306,19 +277,19 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-3 pt-1">
                             <h6 class="font-weight-medium">Subtotal</h6>
-                            <h6 class="font-weight-medium">$150</h6>
+                            <h6 class="font-weight-medium">₵ <?php echo $total_cost; ?></h6>
                         </div>
-                        <div class="d-flex justify-content-between">
+                        <!-- <div class="d-flex justify-content-between">
                             <h6 class="font-weight-medium">Shipping</h6>
                             <h6 class="font-weight-medium">$10</h6>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="card-footer border-secondary bg-transparent">
                         <div class="d-flex justify-content-between mt-2">
                             <h5 class="font-weight-bold">Total</h5>
-                            <h5 class="font-weight-bold">$160</h5>
+                            <h5 class="font-weight-bold">₵ <?php echo $total_cost; ?></h5>
                         </div>
-                        <button class="btn btn-block btn-primary my-3 py-3">Proceed To Checkout</button>
+                        <a href="checkout.php" class="btn btn-block btn-primary my-3 py-3">Proceed To Checkout</a>
                     </div>
                 </div>
             </div>
@@ -336,7 +307,7 @@
                 </a>
                 <p class="mb-2"><i class="fa fa-map-marker-alt text-primary mr-3"></i>Victoria Falls Zimbabwe</p>
                 <p class="mb-2"><i class="fa fa-envelope text-primary mr-3"></i>dubebernice02@gmail.com</p>
-                <p class="mb-0"><i class="fa fa-phone-alt text-primary mr-3"></i>+263785008888  </p>
+                <p class="mb-0"><i class="fa fa-phone-alt text-primary mr-3"></i>+263785008888 </p>
             </div>
             <div class="col-lg-8 col-md-12">
                 <div class="row">
@@ -383,7 +354,7 @@
 
 
     <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
     <script src="lib/easing/easing.min.js"></script>
     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
@@ -394,6 +365,17 @@
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+
+    <script>
+        // $(document).on("click", "#edit_cart", function(e) {
+        //     e.preventDefault();
+
+        //     let qty = $("#cart_qty").val();
+        //     let prod_id = $("#prod_id").val();
+
+        //     window.location.href = `../actions/edit_cart.php?prod_id=${prod_id }&qty= ${qty}&update_cart=true`;
+        // });
+    </script>
 </body>
 
 </html>
